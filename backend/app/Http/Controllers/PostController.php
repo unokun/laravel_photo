@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Post;
+use App\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
@@ -10,7 +12,7 @@ class PostController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -18,9 +20,12 @@ class PostController extends Controller
      */
     public function index()
     {
+        // $posts = Post::where('user_id', \Auth::user()->id)->get();
+        $posts = \Auth::user()->posts;
         return view('posts.index', [
-            'title' => '投稿一覧',
-          ]);
+          'title' => '投稿一覧',
+          'posts' => $posts,
+        ]);
     }
 
     /**
@@ -42,11 +47,16 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(PostRequest $request){
+        Post::create([
+          'user_id' => \Auth::user()->id,
+          'comment' => $request->comment,
+          'image' => '', // 仮置き
+        ]);
+        session()->flash('success', '投稿を追加しました');
+        return redirect()->route('posts.index');
     }
-
+    
     /**
      * Display the specified resource.
      *
@@ -70,9 +80,11 @@ class PostController extends Controller
     public function edit($id)
     {
         //
+        $post = Post::find($id);
         return view('posts.edit', [
-            'title' => '投稿編集',
-          ]);
+          'title' => '投稿編集',
+          'post'  => $post,
+        ]);
     }
 
     /**
@@ -82,9 +94,12 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id, PostRequest $request)
     {
-        //
+        $post = Post::find($id);
+        $post->update($request->only(['comment']));
+        session()->flash('success', '投稿を編集しました');
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -96,5 +111,9 @@ class PostController extends Controller
     public function destroy($id)
     {
         //
+        $post = Post::find($id);
+        $post->delete();
+        \Session::flash('success', '投稿を削除しました');
+        return redirect()->route('posts.index');
     }
 }
