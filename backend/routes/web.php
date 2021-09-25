@@ -17,6 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Auth::routes();
+
 Route::resource('posts', 'PostController');
 Route::resource('likes', 'LikeController')->only([
     'index', 'store', 'destroy'
@@ -27,3 +29,7 @@ Route::resource('follows', 'FollowController')->only([
   ]);
    
 Route::get('/follower', 'FollowController@followerIndex');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
