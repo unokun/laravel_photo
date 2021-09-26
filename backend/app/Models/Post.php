@@ -14,4 +14,10 @@ class Post extends Model
     public function user(){
         return $this->belongsTo('App\Models\User');
     }
+
+    public function scopeRecommend($query){
+        // ランダムに３つの投稿を取得
+        return $query->inRandomOrder()->limit(3);
+    }
+
 }

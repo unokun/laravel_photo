@@ -22,7 +22,7 @@ class PostController extends Controller
     public function index()
     {
         // $posts = Post::where('user_id', \Auth::user()->id)->get();
-        $posts = \Auth::user()->posts;
+        $posts = \Auth::user()->posts()->latest()->get();
         return view('posts.index', [
           'title' => '投稿一覧',
           'posts' => $posts,
