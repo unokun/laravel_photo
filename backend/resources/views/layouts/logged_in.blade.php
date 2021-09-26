@@ -14,7 +14,9 @@
           </a>
         </li>
         <li>
+          <a href="{{ route('users.show', auth()->user()) }}">
           ユーザープロフィール
+          </a>
         </li>
         <li>
             <form action="{{ route('logout') }}" method="POST">

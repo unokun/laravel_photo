@@ -35,3 +35,11 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::get('/users/{user}/edit', 'UserController@edit')->name('users.edit');
+Route::patch('/users/{user}', 'UserController@update')->name('users.update');
+Route::get('/users/{user}/edit_image', 'UserController@editImage')->name('users.edit_image');
+Route::patch('/users/{user}/edit_image', 'UserController@updateImage')->name('users.update_image');
+ 
+Route::resource('users', 'UserController')->only([
+  'show',
+]);
