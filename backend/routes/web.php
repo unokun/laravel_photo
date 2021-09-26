@@ -43,3 +43,9 @@ Route::patch('/users/{user}/edit_image', 'UserController@updateImage')->name('us
 Route::resource('users', 'UserController')->only([
   'show',
 ]);
+
+Route::patch('/posts/{post}/toggle_like', 'PostController@toggleLike')->name('posts.toggle_like');
+
+Route::resource('comments', 'CommentController')->only([
+  'store', 'destroy'
+]);

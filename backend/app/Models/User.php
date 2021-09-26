@@ -48,4 +48,16 @@ class User extends Authenticatable
     public function posts(){
         return $this->hasMany('App\Models\Post');
     }
+
+    public function likes(){
+        return $this->hasMany('App\Models\Like');
+      }
+   
+      public function likePosts(){
+        return $this->belongsToMany('App\Models\Post', 'likes');
+      }
+
+    public function scopeRecommend($query, $self_id){
+        return $query->where('id', '!=', $self_id)->latest()->limit(3);
+    }
 }

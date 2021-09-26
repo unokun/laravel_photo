@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Like;
+use App\Models\User;
 use App\Http\Requests\PostRequest;
 use App\Http\Requests\PostImageRequest;
 
@@ -22,10 +24,12 @@ class PostController extends Controller
     public function index()
     {
         // $posts = Post::where('user_id', \Auth::user()->id)->get();
-        $posts = \Auth::user()->posts()->latest()->get();
+        // $posts = \Auth::user()->posts()->latest()->get();
+        $user = \Auth::user();
         return view('posts.index', [
           'title' => '投稿一覧',
-          'posts' => $posts,
+          'posts' => $user->posts()->latest()->get(),
+          'recommend_users' => User::recommend($user->id)->get()
         ]);
     }
 
@@ -164,4 +168,23 @@ class PostController extends Controller
         session()->flash('success', '画像を変更しました');
         return redirect()->route('posts.index');
       }
+
+    public function toggleLike($id){
+        $user = \Auth::user();
+        $post = Post::find($id);
+
+        if($post->isLikedBy($user)){
+            // いいねの取り消し
+            $post->likes->where('user_id', $user->id)->first()->delete();
+            \Session::flash('success', 'いいねを取り消しました');
+        } else {
+            // いいねを設定
+            Like::create([
+                'user_id' => $user->id,
+                'post_id' => $post->id,
+            ]);
+            \Session::flash('success', 'いいねしました');
+        }
+        return redirect('/posts');
+    }
 }
