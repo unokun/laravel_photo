@@ -67,3 +67,6 @@
   .like_post .like_button {
       color: yellow;
   }
+  .follow {
+    cursor: pointer;
+  }

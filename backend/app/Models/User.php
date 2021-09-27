@@ -60,4 +60,20 @@ class User extends Authenticatable
     public function scopeRecommend($query, $self_id){
         return $query->where('id', '!=', $self_id)->latest()->limit(3);
     }
+
+    public function follows(){
+        return $this->hasMany('App\Models\Follow');
+    }
+ 
+    public function follow_users(){
+      return $this->belongsToMany('App\Models\User', 'follows', 'user_id', 'follow_id');
+    }
+ 
+    public function followers(){
+      return $this->belongsToMany('App\Models\User', 'follows', 'follow_id', 'user_id');
+    }
+    public function isFollowing($user){
+        $result = $this->follow_users->pluck('id')->contains($user->id);
+        return $result;
+    }
 }

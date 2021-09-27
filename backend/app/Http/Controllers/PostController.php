@@ -26,10 +26,13 @@ class PostController extends Controller
         // $posts = Post::where('user_id', \Auth::user()->id)->get();
         // $posts = \Auth::user()->posts()->latest()->get();
         $user = \Auth::user();
+        $follow_user_ids = $user->follow_users->pluck('id');
+        $user_posts = $user->posts()->orWhereIn('user_id', $follow_user_ids )->latest()->get();
+
         return view('posts.index', [
           'title' => '投稿一覧',
-          'posts' => $user->posts()->latest()->get(),
-          'recommend_users' => User::recommend($user->id)->get()
+          'posts' => $user_posts,
+          'recommended_users' => User::recommend($user->id)->get()
         ]);
     }
 

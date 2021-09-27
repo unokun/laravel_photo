@@ -7,8 +7,23 @@
   <a href="{{route('posts.create')}}">新規投稿</a>
 
   <ul class="recommend_users">
-    @forelse($recommend_users as $recommend_user)
-      <li><a href="{{ route('users.show', $recommend_user) }}">{{ $recommend_user->name }}</a></li>
+    @forelse($recommended_users as $recommended_user)
+    <li>
+        <a href="{{ route('users.show', $recommended_user) }}">{{ $recommended_user->name }}</a>
+        @if(Auth::user()->isFollowing($recommended_user))
+          <form method="post" action="{{route('follows.destroy', $recommended_user)}}" class="follow">
+            @csrf
+            @method('delete')
+            <input type="submit" value="フォロー解除">
+          </form>
+        @else
+          <form method="post" action="{{route('follows.store')}}" class="follow">
+            @csrf
+            <input type="hidden" name="follow_id" value="{{ $recommended_user->id }}">
+            <input type="submit" value="フォロー">
+          </form>
+        @endif
+      </li>
     @empty
       <li>おすすめユーザーはいません。</li>
     @endforelse
