@@ -71,7 +71,7 @@
           <li>書き込みはありません。</li>
       @endforelse
   </ul>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  {{ $posts->links() }}
   <script>
     /* global $ */
     $('.like_button').on('click', (event) => {

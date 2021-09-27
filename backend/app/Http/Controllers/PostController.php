@@ -27,8 +27,7 @@ class PostController extends Controller
         // $posts = \Auth::user()->posts()->latest()->get();
         $user = \Auth::user();
         $follow_user_ids = $user->follow_users->pluck('id');
-        $user_posts = $user->posts()->orWhereIn('user_id', $follow_user_ids )->latest()->get();
-
+        $user_posts = $user->posts()->orWhereIn('user_id', $follow_user_ids )->latest()->paginate(3);
         return view('posts.index', [
           'title' => '投稿一覧',
           'posts' => $user_posts,
